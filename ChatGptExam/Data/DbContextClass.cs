@@ -19,6 +19,7 @@ namespace ChatGptExam.Data
             base.OnModelCreating(builder);
         }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<ShopSubscription> shopSubscriptions { get; set; }
         
     }
 }
