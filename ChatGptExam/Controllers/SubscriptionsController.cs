@@ -1,11 +1,11 @@
 ﻿using ChatGptExam.Data;
 using ChatGptExam.Models;
+using ChatGptExam.Roles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatGptExam.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     public class SubscriptionsController : ControllerBase
     {
@@ -17,12 +17,20 @@ namespace ChatGptExam.Controllers
         }
 
         [HttpGet]
-        [Route("GetSubscriptionsList")]
-        public IResult Get()
+        [Route("ListSubscriptions")]
+        public IActionResult ListSubscriptions()
         {
-            return Results.Json(_dbContext.Subscriptions.ToList());
+            var subscriptions = _dbContext.Subscriptions.ToList();
+
+            if (subscriptions == null || subscriptions.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(subscriptions);
         }
 
+        [Authorize(Roles = $"{UserRoles.Admin}")]
         [HttpPost]
         [Route("CreateSubscriptions")]
         public IActionResult AddSubscriptions(Subscription subscription)
@@ -38,6 +46,7 @@ namespace ChatGptExam.Controllers
             return Forbid();
         }
 
+        [Authorize(Roles = $"{UserRoles.Admin}")]
         [HttpPost]
         [Route("EditSubscriptions")]
         public IActionResult EditSubscriptions(Subscription subscription)
@@ -47,6 +56,7 @@ namespace ChatGptExam.Controllers
             if (item != null)
             {
                 item.Name = subscription.Name;
+                item.Image = subscription.Image;
                 item.Description = subscription.Description;
                 item.Price = subscription.Price;
                 _dbContext.SaveChanges();
@@ -55,6 +65,7 @@ namespace ChatGptExam.Controllers
             return Forbid();
         }
 
+        [Authorize(Roles = $"{UserRoles.Admin}")]
         [HttpPost]
         [Route("DelSubscriptions")]
         public IActionResult DeleteSubscriptions(Subscription subscription)

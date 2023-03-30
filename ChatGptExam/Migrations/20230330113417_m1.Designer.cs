@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatGptExam.Migrations
 {
     [DbContext(typeof(DbContextClass))]
-    [Migration("20230329213102_m1")]
+    [Migration("20230330113417_m1")]
     partial class m1
     {
         /// <inheritdoc />
@@ -35,6 +35,9 @@ namespace ChatGptExam.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
